@@ -23,6 +23,19 @@ router.post('/notes', (req,res) => {
     });
 });
 
+router.delete('/notes/:id', (req,res) => {
+    const noteId = parseInt(req.params.id);
+    fs.readFile(path.join(__dirname, '../db/db.json'), 'utf8', (err,data) => {
+        if (err) throw err;
+        let notes = JSON.parse(data);
+        notes = notes.filter(note => note.id !== noteId);
+        fs.writeFile(path.join(__dirname, '../db/db.json'), JSON.stringify(notes), err => {
+            if (err) throw err;
+            res.json({ succes: true });
+        });
+    });
+});
+
 function generateId(notes) {
     const ids = notes.map(note => note.id);
     const maxId = Math.max(...ids);
